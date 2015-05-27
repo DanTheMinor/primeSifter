@@ -6,47 +6,88 @@ function listNum(integer) {
   return numbers
 }
 
-function removeMultiple(array) {
-  for (var n = 2; n <= array[array.length]; n++) {
-    for(var i = 0; i <= array.length; i++) {
-      if (n % array[i] == 0) {
-        array.splice(i, 1)
-        i -= 1
-      }
-    }
-  }
-  return array
-}
-
 function findPrimes(integer){
   var myArray = listNum(integer)
-  var cleanArray = myArray
-  for (var i = 2; i <= Math.ceil(integer / 2); i++) {
+  var cleanArray = removeNum(myArray, 2)
+  for (var i = 3; i <= Math.ceil(integer / 2); i += 2) {
     cleanArray = removeNum(cleanArray, i)
   }
   return cleanArray;
 }
 
 function removeNum(array, integer) {
-  var myArray = array;
   var lastNum = array[array.length]
-  myArray.forEach(function(element, index, array) {
+  array.forEach(function(element, index, array) {
     if (element % integer === 0 && element !== integer) {
-      myArray.splice(index, 1)
+      array.splice(index, 1)
     }
   });
-  return myArray
+  return array
 }
+
+function findPrimesFast(integer){
+  var myArray = listNum(integer)
+  var cleanArray = removeNumFast(myArray, 2)
+  for (var i = 3; i <= Math.ceil(Math.sqrt(integer)); i += 2) {
+    removeNum(cleanArray, i);
+  }
+  return cleanArray;
+}
+
+function removeNumFast(array, integer) {
+  var lastNum = array[array.length]
+  array.forEach(function(element, index, array) {
+    if (element % integer === 0 && element !== integer) {
+      array.splice(index, 1)
+    }
+  });
+  return array
+}
+
 
 function formatString(array) {
   var string = array.join(", ")
   return string
 }
+// 
+// function buildMap(integer) {
+//   var array = [];
+//   for (var i = 0; i <= integer; i++) {
+//     array.push(0);
+//   }
+//   return array;
+// }
+//
+// function mapArray(array, integer) {
+//   var lastNum = array[array.length];
+//   var  mapArray = buildMap(array.length);
+//   debugger
+//   array.forEach(function(element, index, array) {
+//     if (element % integer === 0 && element !== integer) {
+//       //array.splice(index, 1)
+//       mapArray[index] = 1;
+//     }
+//   });
+//   return mapArray
+// }
+//
+// function doMap(array) {
+//   var myArray = listNum(integer)
+//   for (var i = 3; i <= Math.ceil(integer/2); i++) {
+//     mapArray(cleanArray, i);
+//   }
+//   return cleanArray;
+// }
 
 $(document).ready(function() {
   $("form#primes").submit(function(event) {
     var integer = parseInt($("input#number").val());
-    var array = findPrimes(integer);
+    var start = performance.now();
+    //var array = findPrimes(integer);
+    var array = findPrimesFast(integer); //remove later
+    var end = performance.now();;
+    var results = end - start;
+    console.log(results);
     var string = formatString(array)
     $("p#results").text(string)
     event.preventDefault();
